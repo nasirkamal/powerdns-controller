@@ -1,0 +1,83 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: powerdns-controller
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pod-reader
+rules:
+  - apiGroups: [""]
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pod-reader-sa
+  namespace: powerdns-controller
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pod-reader-binding
+roleRef:
+  kind: ClusterRole
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: pod-reader-sa
+  namespace: powerdns-controller
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: powerdns-controller-config
+  namespace: powerdns-controller
+data:
+  pdns.yaml: |
+    configs:
+      powerdns:
+        endpoint: https://<url>
+        user: admin
+        key: PowerDNSAPI
+      dns:
+        ip: 192.168.253.156
+        port: 53
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: powerdns-controller-deployment
+  namespace: powerdns-controller
+  labels:
+    app: powerdns-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: powerdns-controller
+  template:
+    metadata:
+      labels:
+        app: powerdns-controller
+    spec:
+      containers:
+        - name: powerdns-controller-pod
+          image: <image-repository>/repository/ect-repo/powerdns-controller:0.1
+          volumeMounts:
+            - name: config-file
+              mountPath: /etc/pdns
+      volumes:
+        - name: config-file
+          configMap:
+            name: powerdns-controller-config
+      serviceAccountName: pod-reader-sa

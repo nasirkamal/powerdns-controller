@@ -1,8 +1,0 @@
-configs:
-  powerdns:
-    endpoint: https://powerdns.ect-telecoms.de
-    user: admin
-    key: PowerDNSAPI
-  dns:
-    ip: 192.168.253.156
-    port: 53
