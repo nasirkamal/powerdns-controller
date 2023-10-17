@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: net-pod-deployment
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: net-pod
+  template:
+    metadata:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: macvlan-test-conf
+        k8s.v1.cni.cncf.io/network-hostnames: '{"macvlan-test-conf":
+                                                      {"hostname": "bbc.cnn.org.",
+                                                        "weight": 10 }}'
+      labels: 
+        app: net-pod
+    spec:
+      containers:
+      - name: netshoot-pod
+        image: nicolaka/netshoot
+        command: ["tail"]
+        args: ["-f", "/dev/null"]
+      terminationGracePeriodSeconds: 0

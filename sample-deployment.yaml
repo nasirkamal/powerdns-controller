@@ -45,7 +45,7 @@ data:
   pdns.yaml: |
     configs:
       powerdns:
-        endpoint: https://<url>
+        endpoint: http://powerdns-powerdns-helm-api.powerdns.svc.cluster.local:8081
         user: admin
         key: PowerDNSAPI
       dns:
@@ -72,7 +72,7 @@ spec:
     spec:
       containers:
         - name: powerdns-controller-pod
-          image: <image-repository>/repository/ect-repo/powerdns-controller:0.1
+          image: <Repository>/repository/ect-repo/powerdns-controller:0.3
           volumeMounts:
             - name: config-file
               mountPath: /etc/pdns

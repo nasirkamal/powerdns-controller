@@ -1,4 +1,4 @@
-# Custom objects should be non-namespaced
+#!/usr/local/bin/python
 import logging
 import os
 import sys

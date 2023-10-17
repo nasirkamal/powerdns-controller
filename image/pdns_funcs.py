@@ -1,6 +1,5 @@
 import requests
 import logging
-import dns.resolver
 
 def pdns_exists(pdnsHost='', pdnsAPIKey=''):
     logging.debug("EVENT CHECK_POWER_DNS: Checking PowerDNS at %s", pdnsHost)
